@@ -9,8 +9,8 @@
 ```bash
 # Download the source code if you haven't
 git clone https://github.com/JimLin00/Nachos-Ubuntu.git nachos
-cd nachos/code
-make
+cd nachos
+bash install.sh
 ```
 
 ## Acknowledgment
