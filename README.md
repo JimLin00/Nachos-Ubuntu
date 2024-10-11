@@ -36,10 +36,6 @@ git clone https://github.com/JimLin00/Nachos-Ubuntu.git nachos
 cd nachos
 bash install.sh
 ```
-git clone https://github.com/JimLin00/Nachos-Ubuntu.git nachos
-cd nachos/code
-make
-```
 >>>>>>> 3890b6c (Ubuntu Verison)
 
 ## Acknowledgment
