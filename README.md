@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-# Nachos-4.0 for Operating System Course 
+# Nachos-4.0 for Operating System Course
 
 ## Before Starting Lab2
 
@@ -27,6 +26,8 @@ You can reuse the virtual machine from Lab1, just need to git this repo.
 If you see `qemu: uncaught target signal 11 (Segmentation fault) - core dumped`, you may need to downgrade docker desktop to 4.24.2 or upgrade macos to Sonoma. See [here](https://github.com/docker/for-mac/issues/7172)
 
 >>>>>>> 3890b6c (Ubuntu Verison)
+### Prerequisite(Ubuntu)
+
 ### Build
 
 ```bash
@@ -35,6 +36,11 @@ git clone https://github.com/JimLin00/Nachos-Ubuntu.git nachos
 cd nachos
 bash install.sh
 ```
+git clone https://github.com/JimLin00/Nachos-Ubuntu.git nachos
+cd nachos/code
+make
+```
+>>>>>>> 3890b6c (Ubuntu Verison)
 
 ## Acknowledgment
 
