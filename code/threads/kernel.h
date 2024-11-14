@@ -36,6 +36,13 @@ class Kernel {
     void Initialize();  // initialize the kernel -- separated
                         // from constructor because
                         // refers to "kernel" as a global
+    
+    /* Lab2 - Scheduling - Start */
+
+    void Initialize(SchedulerType type) ;
+
+    /* Lab2 - Scheduling - End */
+    
     void ExecAll();
     int Exec(char *name);
     void ThreadSelfTest();  // self test of threads and synchronization
