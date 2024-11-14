@@ -88,6 +88,17 @@ class Thread {
                                             // must not be running when delete
                                             // is called
 
+    /* Lab2 - Scheduling - Start */
+
+    int getBurstTime() {}
+    int getPriority() {}
+    int getStartTime() {}
+    void setBurstTime(int x) {}
+    void setStartTime(int x) {}
+    void setPriority(int x) {}
+
+    /* Lab2 - Scheduling - End */
+
     // basic thread operations
 
     void Fork(VoidFunctionPtr func, void *arg);
@@ -114,6 +125,13 @@ class Thread {
     int *stack;           // Bottom of the stack
                           // NULL if this is the main thread
                           // (If NULL, don't deallocate stack)
+    
+    /* Lab2 - Scheduling - Start */
+    
+    // Hint : Create variable at here.
+
+    /* Lab2 - Scheduling - End */
+
     ThreadStatus status;  // ready, running or blocked
     char *name;
     int ID;
