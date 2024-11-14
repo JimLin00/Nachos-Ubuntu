@@ -156,6 +156,13 @@ void Print(char *name) {
 //----------------------------------------------------------------------
 
 int main(int argc, char **argv) {
+
+    /* Lab2 - Scheduling - Start */
+
+    SchedulerType scheType = RR ;
+
+    /* Lab2 - Scheduling - End */
+
     int i;
     char *debugArg = "";
     char *userProgName = NULL;  // default is not to execute a user prog
@@ -192,6 +199,27 @@ int main(int argc, char **argv) {
         } else if (strcmp(argv[i], "-N") == 0) {
             networkTestFlag = TRUE;
         }
+        
+        /* Lab2 - Scheduling - Start */
+
+        // Hint : You should write something in "if()" to implement a new bash option.
+        //        At the same time, don't remove the "threadTestFlag" and "ASSERT()"
+        else if () {
+            threadTestFlag = TRUE;
+            ASSERT(i + 1 < argc) ;
+
+            // Hint : This example shows you how to handle the parameter after a bash option
+            //        "cout" is a debug message, "scheType" is a variable to record the scheduling method.
+            if (strcmp(argv[i + 1], "RR") == 0) {
+                cout << "===== RR =====" << endl ;
+                scheType = RR ;
+            } // if()
+            
+            i++ ;
+        } // else if()
+
+        /* Lab2 - Scheduling - End */
+
 #ifndef FILESYS_STUB
         else if (strcmp(argv[i], "-cp") == 0) {
             ASSERT(i + 2 < argc);
@@ -211,6 +239,7 @@ int main(int argc, char **argv) {
         } else if (strcmp(argv[i], "-D") == 0) {
             dumpFlag = true;
         }
+
 #endif  // FILESYS_STUB
         else if (strcmp(argv[i], "-u") == 0) {
             cout << "Partial usage: nachos [-z -d debugFlags]\n";
@@ -229,7 +258,13 @@ int main(int argc, char **argv) {
 
     kernel = new Kernel(argc, argv);
 
-    kernel->Initialize();
+    // kernel->Initialize();
+    
+    /* Lab2 - Scheduling - Start */
+
+    kernel->Initialize(scheType) ;
+
+    /* Lab2 - Scheduling - End */
 
     CallOnUserAbort(Cleanup);  // if user hits ctl-C
 
@@ -237,6 +272,7 @@ int main(int argc, char **argv) {
     // run some tests, if requested
     if (threadTestFlag) {
         kernel->ThreadSelfTest();  // test threads and synchronization
+        return 1 ;
     }
     if (consoleTestFlag) {
         kernel->ConsoleTest();  // interactive test of the synchronized console
