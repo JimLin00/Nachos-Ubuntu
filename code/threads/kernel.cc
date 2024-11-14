@@ -288,3 +288,23 @@ int Kernel::Exec(char *name) {
     //    Kernel::Run();
     //  cout << "after ThreadedKernel:Run();" << endl;  // unreachable
 }
+
+//----------------------------------------------------------------------
+// Kernel::Initialize( SchedulerType scheType )
+//----------------------------------------------------------------------
+
+void Kernel::Initialize( SchedulerType scheType ) {
+
+    currentThread = new Thread("main", threadNum++);
+    currentThread->setStatus(RUNNING);
+
+    stats = new Statistics();
+    interrupt = new Interrupt;
+    scheduler = new Scheduler( scheType );
+    alarm = new Alarm(randomSlice);
+    machine = new Machine(debugUserProg);
+    synchConsoleIn = new SynchConsoleInput(consoleIn);
+    synchConsoleOut = new SynchConsoleOutput(consoleOut);
+    synchDisk = new SynchDisk();
+    interrupt->Enable();
+}
