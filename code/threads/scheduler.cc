@@ -167,3 +167,29 @@ void Scheduler::Print() {
     cout << "Ready list contents:\n";
     readyList->Apply(ThreadPrint);
 }
+
+//----------------------------------------------------------------------
+// Scheduler::Scheduler(SchedulerType type)
+//----------------------------------------------------------------------
+
+Scheduler::Scheduler(SchedulerType type) {
+        schedulerType = type;
+        switch(type)
+        {
+            // This is an example "case"
+            case RR:
+                readyList = new List<Thread *> ;
+                break;
+
+            // This is a "case" framework
+            // More hint : You need to write your thread compare method (Please refer to the PowerPoint).
+            //             For example, if you write a compare method named "RRCompare",
+            //             Line 227 (readyList = new SortedList<Thread *>(/*Your Compare Method*/);) will become :
+            //             readyList = new SortedList<Thread *>( RRCompare );
+
+            case /* scheduler type */ :
+                readyList = new SortedList<Thread *>( /*Your Compare Method*/ );
+                break;
+        }
+        toBeDestroyed = NULL;
+} // Scheduler()
