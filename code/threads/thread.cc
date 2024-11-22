@@ -413,11 +413,11 @@ static void SimulateTimeThread() {
 
 void Thread::SelfTest() {
     DEBUG(dbgThread, "Entering Thread::SelfTest") ;
-    const int thread_num = 3 ;
-    char *name[thread_num] = {"A", "B", "C"} ;
-    int priority[thread_num] = {7, 4, 6} ;
-    int burst[thread_num] = {5, 19, 3} ;
-    int start[thread_num] = {1, 2, 3} ;
+    const int thread_num = 6 ;
+    char *name[thread_num] = {"A", "B", "C", "D", "E", "F"} ;
+    int priority[thread_num] = {7, 2, 4, 4, 6, 3} ;
+    int burst[thread_num] = {3, 2, 4, 4, 5, 7} ;
+    int start[thread_num] = {1, 1, 7, 7, 15, 15} ;
 
     Thread *t ;
     int i = 0 ;
