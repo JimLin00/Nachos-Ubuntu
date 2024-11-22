@@ -13,6 +13,9 @@ In other words, if you haven't finished Lab1, it's fine - Lab2 is independent fr
 
 ### Prerequisite(Ubuntu)
 
+## VM Ware
+You can reuse the virtual machine from Lab1, just need to git this repo.
+
 ### Build
 
 ```bash
