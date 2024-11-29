@@ -69,10 +69,7 @@ void ExceptionHandler(ExceptionType which) {
                     DEBUG(dbgTraCode, "In ExceptionHandler(), into SysPrintInt, " << kernel->stats->totalTicks);
                     SysPrintInt(val);
                     DEBUG(dbgTraCode, "In ExceptionHandler(), return from SysPrintInt, " << kernel->stats->totalTicks);
-                    // Set Program Counter
-                    kernel->machine->WriteRegister(PrevPCReg, kernel->machine->ReadRegister(PCReg));
-                    kernel->machine->WriteRegister(PCReg, kernel->machine->ReadRegister(PCReg) + 4);
-                    kernel->machine->WriteRegister(NextPCReg, kernel->machine->ReadRegister(PCReg) + 4);
+                    updateProgramCounter();
                     return;
                     ASSERTNOTREACHED();
                     break;
@@ -94,9 +91,7 @@ void ExceptionHandler(ExceptionType which) {
                         status = SysCreate(filename);
                         kernel->machine->WriteRegister(2, (int)status);
                     }
-                    kernel->machine->WriteRegister(PrevPCReg, kernel->machine->ReadRegister(PCReg));
-                    kernel->machine->WriteRegister(PCReg, kernel->machine->ReadRegister(PCReg) + 4);
-                    kernel->machine->WriteRegister(NextPCReg, kernel->machine->ReadRegister(PCReg) + 4);
+                    updateProgramCounter();
                     return;
                     ASSERTNOTREACHED();
                     break;
@@ -110,17 +105,59 @@ void ExceptionHandler(ExceptionType which) {
                     /* Prepare Result */
                     kernel->machine->WriteRegister(2, (int)result);
                     /* Modify return point */
-                    {
-                        /* set previous programm counter (debugging only)*/
-                        kernel->machine->WriteRegister(PrevPCReg, kernel->machine->ReadRegister(PCReg));
-
-                        /* set programm counter to next instruction (all Instructions are 4 byte wide)*/
-                        kernel->machine->WriteRegister(PCReg, kernel->machine->ReadRegister(PCReg) + 4);
-
-                        /* set next programm counter for brach execution */
-                        kernel->machine->WriteRegister(NextPCReg, kernel->machine->ReadRegister(PCReg) + 4);
-                    }
+                    updateProgramCounter();
                     cout << "result is " << result << "\n";
+                    return;
+                    ASSERTNOTREACHED();
+                    break;
+                case SC_Open:
+                    val = kernel->machine->ReadRegister(4);
+                    {
+                        char *fileName = &(kernel->machine->mainMemory[val]);
+                        OpenFileId fd = SysOpen(fileName);
+                        DEBUG(dbgSys, "Opening file " << fd << "\n");
+                        kernel->machine->WriteRegister(2, fd);
+                    }
+                    updateProgramCounter();
+                    return;
+                    ASSERTNOTREACHED();
+                    break;
+                case SC_Write:
+                    val = kernel->machine->ReadRegister(4);
+                    {
+                        char *content = &(kernel->machine->mainMemory[val]);
+                        int writeSize = kernel->machine->ReadRegister(5);
+                        int fd = kernel->machine->ReadRegister(6);
+                        DEBUG(dbgSys, "Writting file with size " << writeSize << " File id " << fd <<  "\n");
+                        int writeResult = SysWrite(content, writeSize, fd);
+                        kernel->machine->WriteRegister(2, writeResult);
+                    }
+                    updateProgramCounter();
+                    return;
+                    ASSERTNOTREACHED();
+                    break;
+                case SC_Read:
+                    val = kernel->machine->ReadRegister(4);
+                    {
+                        char *content = &(kernel->machine->mainMemory[val]);
+                        int writeSize = kernel->machine->ReadRegister(5);
+                        int fd = kernel->machine->ReadRegister(6);
+                        DEBUG(dbgSys, "Reading file with size " << writeSize << " File id " << fd << "\n");
+                        int readResult = SysRead(content, writeSize, fd);
+                        kernel->machine->WriteRegister(2, readResult);
+                    }
+                    updateProgramCounter();
+                    return;
+                    ASSERTNOTREACHED();
+                    break;
+                case SC_Close:
+                    {
+                        int fd = kernel->machine->ReadRegister(4);
+                        DEBUG(dbgSys, "Closing file " << fd << "\n");
+                        int result = SysClose(fd);
+                        kernel->machine->WriteRegister(2, result);
+                    }
+                    updateProgramCounter();
                     return;
                     ASSERTNOTREACHED();
                     break;
@@ -140,4 +177,15 @@ void ExceptionHandler(ExceptionType which) {
             break;
     }
     ASSERTNOTREACHED();
+}
+
+void updateProgramCounter(){
+    /* set previous programm counter (debugging only)*/
+    kernel->machine->WriteRegister(PrevPCReg, kernel->machine->ReadRegister(PCReg));
+
+    /* set programm counter to next instruction (all Instructions are 4 byte wide)*/
+    kernel->machine->WriteRegister(PCReg, kernel->machine->ReadRegister(PCReg) + 4);
+
+    /* set next programm counter for brach execution */
+    kernel->machine->WriteRegister(NextPCReg, kernel->machine->ReadRegister(PCReg) + 4);
 }

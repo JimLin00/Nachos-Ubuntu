@@ -177,6 +177,11 @@ int ThreadJoin(ThreadId id);
  */
 void ThreadExit(int ExitCode);
 
+/*
+ * This is only for update program counter
+ */
+void updateProgramCounter();
+
 #endif /* IN_ASM */
 
 #endif /* SYSCALL_H */
