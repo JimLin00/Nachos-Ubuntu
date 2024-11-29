@@ -71,7 +71,7 @@ void List<T>::Append(T item) {
     ListElement<T> *element = new ListElement<T>(item);
 
     ASSERT(!this->IsInList(item));
-    if (IsEmpty()) {  // list is empty
+    if (this->IsEmpty()) {  // list is empty
         first = element;
         last = element;
     } else {  // else put it after last
@@ -79,6 +79,7 @@ void List<T>::Append(T item) {
         last = element;
     }
     numInList++;
+    ASSERT(this->IsInList(item));
     ASSERT(this->IsInList(item));
 }
 
@@ -92,7 +93,7 @@ void List<T>::Prepend(T item) {
     ListElement<T> *element = new ListElement<T>(item);
 
     ASSERT(!this->IsInList(item));
-    if (IsEmpty()) {  // list is empty
+    if (this->IsEmpty()) {  // list is empty
         first = element;
         last = element;
     } else {  // else put it before first
@@ -100,6 +101,7 @@ void List<T>::Prepend(T item) {
         first = element;
     }
     numInList++;
+    ASSERT(this->IsInList(item));
     ASSERT(this->IsInList(item));
 }
 
@@ -117,7 +119,7 @@ T List<T>::RemoveFront() {
     ListElement<T> *element = first;
     T thing;
 
-    ASSERT(!IsEmpty());
+    ASSERT(!this->IsEmpty());
 
     thing = first->item;
     if (first == last) {  // list had one item, now has none
@@ -142,10 +144,11 @@ void List<T>::Remove(T item) {
     T removed;
 
     ASSERT(this->IsInList(item));
+    ASSERT(this->IsInList(item));
 
     // if first item on list is match, then remove from front
     if (item == first->item) {
-        removed = RemoveFront();
+        removed = this->RemoveFront();
         ASSERT(item == removed);
     } else {
         prev = first;
@@ -162,6 +165,7 @@ void List<T>::Remove(T item) {
         }
         ASSERT(ptr != NULL);  // should always find item!
     }
+    ASSERT(!this->IsInList(item));
     ASSERT(!this->IsInList(item));
 }
 
@@ -217,6 +221,7 @@ void SortedList<T>::Insert(T item) {
     ListElement<T> *ptr;  // keep track
 
     ASSERT(!this->IsInList(item));
+    ASSERT(!this->IsInList(item));
     if (this->IsEmpty()) {  // if list is empty, put at front
         this->first = element;
         this->last = element;
@@ -236,6 +241,7 @@ void SortedList<T>::Insert(T item) {
         this->last = element;
     }
     this->numInList++;
+    ASSERT(this->IsInList(item));
     ASSERT(this->IsInList(item));
 }
 
@@ -276,27 +282,27 @@ void List<T>::SelfTest(T *p, int numEntries) {
     int i;
     ListIterator<T> *iterator = new ListIterator<T>(this);
 
-    SanityCheck();
+    this->SanityCheck();
     // check various ways that list is empty
-    ASSERT(IsEmpty() && (first == NULL));
+    ASSERT(this->IsEmpty() && (first == NULL));
     for (; !iterator->IsDone(); iterator->Next()) {
         ASSERTNOTREACHED();  // nothing on list
     }
 
     for (i = 0; i < numEntries; i++) {
-        Append(p[i]);
+        this->Append(p[i]);
         ASSERT(this->IsInList(p[i]));
-        ASSERT(!IsEmpty());
+        ASSERT(!this->IsEmpty());
     }
-    SanityCheck();
+    this->SanityCheck();
 
     // should be able to get out everything we put in
     for (i = 0; i < numEntries; i++) {
-        Remove(p[i]);
+        this->Remove(p[i]);
         ASSERT(!this->IsInList(p[i]));
     }
-    ASSERT(IsEmpty());
-    SanityCheck();
+    ASSERT(this->IsEmpty());
+    this->SanityCheck();
     delete iterator;
 }
 
@@ -315,7 +321,7 @@ void SortedList<T>::SanityCheck() const {
     if (this->first != this->last) {
         for (prev = this->first, ptr = this->first->next; ptr != NULL;
              prev = ptr, ptr = ptr->next) {
-            ASSERT(compare(prev->item, ptr->item) <= 0);
+            ASSERT(this->compare(prev->item, ptr->item) <= 0);
         }
     }
 }
@@ -333,23 +339,24 @@ void SortedList<T>::SelfTest(T *p, int numEntries) {
     List<T>::SelfTest(p, numEntries);
 
     for (i = 0; i < numEntries; i++) {
-        Insert(p[i]);
+        this->Insert(p[i]);
         ASSERT(this->IsInList(p[i]));
     }
-    SanityCheck();
+    this->SanityCheck();
 
     // should be able to get out everything we put in
     for (i = 0; i < numEntries; i++) {
         q[i] = this->RemoveFront();
+        ASSERT(!this->IsInList(q[i]));
         ASSERT(!this->IsInList(q[i]));
     }
     ASSERT(this->IsEmpty());
 
     // make sure everything came out in the right order
     for (i = 0; i < (numEntries - 1); i++) {
-        ASSERT(compare(q[i], q[i + 1]) <= 0);
+        ASSERT(this->compare(q[i], q[i + 1]) <= 0);
     }
-    SanityCheck();
+    this->SanityCheck();
 
     delete q;
 }
