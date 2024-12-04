@@ -102,7 +102,6 @@ void List<T>::Prepend(T item) {
     }
     numInList++;
     ASSERT(this->IsInList(item));
-    ASSERT(this->IsInList(item));
 }
 
 //----------------------------------------------------------------------
@@ -166,7 +165,6 @@ void List<T>::Remove(T item) {
         ASSERT(ptr != NULL);  // should always find item!
     }
     ASSERT(!this->IsInList(item));
-    ASSERT(!this->IsInList(item));
 }
 
 //----------------------------------------------------------------------
@@ -221,7 +219,6 @@ void SortedList<T>::Insert(T item) {
     ListElement<T> *ptr;  // keep track
 
     ASSERT(!this->IsInList(item));
-    ASSERT(!this->IsInList(item));
     if (this->IsEmpty()) {  // if list is empty, put at front
         this->first = element;
         this->last = element;
@@ -241,7 +238,6 @@ void SortedList<T>::Insert(T item) {
         this->last = element;
     }
     this->numInList++;
-    ASSERT(this->IsInList(item));
     ASSERT(this->IsInList(item));
 }
 
@@ -347,7 +343,6 @@ void SortedList<T>::SelfTest(T *p, int numEntries) {
     // should be able to get out everything we put in
     for (i = 0; i < numEntries; i++) {
         q[i] = this->RemoveFront();
-        ASSERT(!this->IsInList(q[i]));
         ASSERT(!this->IsInList(q[i]));
     }
     ASSERT(this->IsEmpty());

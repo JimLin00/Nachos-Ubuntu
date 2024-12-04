@@ -9,16 +9,15 @@
 //	Finish -- called when the forked procedure finishes, to clean up
 //	Yield -- relinquish control over the CPU to another ready thread
 //	Sleep -- relinquish control over the CPU, but thread is now blocked.
-//		In other words, it will not run again, until explicitly
+//		In other words, it will not run again, until explicitly 
 //		put back on the ready queue.
 //
 // Copyright (c) 1992-1996 The Regents of the University of California.
-// All rights reserved.  See copyright.h for copyright notice and limitation
+// All rights reserved.  See copyright.h for copyright notice and limitation 
 // of liability and disclaimer of warranty provisions.
 
-#include "thread.h"
-
 #include "copyright.h"
+#include "thread.h"
 #include "switch.h"
 #include "synch.h"
 #include "sysdep.h"
@@ -69,8 +68,14 @@ Thread::Thread(char *threadName, int threadID) {
 Thread::~Thread() {
     DEBUG(dbgThread, "Deleting thread: " << name);
     ASSERT(this != kernel->currentThread);
-    if (stack != NULL)
-        DeallocBoundedArray((char *)stack, StackSize * sizeof(int));
+
+    /* Lab3 - NachOS - Memory Management - Start */
+
+    if (space != NULL) space->~AddrSpace();
+
+    /* Lab3 - NachOS - Memory Management - End */
+    
+    if (stack != NULL) DeallocBoundedArray((char *) stack, StackSize * sizeof(int));
 }
 
 //----------------------------------------------------------------------

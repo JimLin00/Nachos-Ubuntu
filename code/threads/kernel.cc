@@ -107,7 +107,7 @@ void Kernel::Initialize() {
     fileSystem = new FileSystem();
 #else
     fileSystem = new FileSystem(formatFlag);
-#endif  // FILESYS_STUB
+#endif // FILESYS_STUB
     postOfficeIn = new PostOfficeInput(10);
     postOfficeOut = new PostOfficeOutput(reliability);
 
@@ -131,7 +131,6 @@ Kernel::~Kernel() {
     delete fileSystem;
     delete postOfficeIn;
     delete postOfficeOut;
-
     Exit(0);
 }
 
@@ -214,12 +213,12 @@ void Kernel::NetworkTest() {
         outMailHdr.length = strlen(data) + 1;
 
         // Send the first message
-        postOfficeOut->Send(outPktHdr, outMailHdr, data);
+        postOfficeOut->Send(outPktHdr, outMailHdr, data); 
 
         // Wait for the first message from the other machine
         postOfficeIn->Receive(0, &inPktHdr, &inMailHdr, buffer);
-        cout << "Got: " << buffer << " : from " << inPktHdr.from << ", box "
-             << inMailHdr.from << "\n";
+        cout << "Got: " << buffer << " : from " << inPktHdr.from << ", box " 
+                                                << inMailHdr.from << "\n";
         cout.flush();
 
         // Send acknowledgement to the other machine (using "reply to" mailbox
@@ -227,12 +226,12 @@ void Kernel::NetworkTest() {
         outPktHdr.to = inPktHdr.from;
         outMailHdr.to = inMailHdr.from;
         outMailHdr.length = strlen(ack) + 1;
-        postOfficeOut->Send(outPktHdr, outMailHdr, ack);
+        postOfficeOut->Send(outPktHdr, outMailHdr, ack); 
 
         // Wait for the ack from the other machine to the first message we sent
-        postOfficeIn->Receive(1, &inPktHdr, &inMailHdr, buffer);
-        cout << "Got: " << buffer << " : from " << inPktHdr.from << ", box "
-             << inMailHdr.from << "\n";
+	postOfficeIn->Receive(1, &inPktHdr, &inMailHdr, buffer);
+        cout << "Got: " << buffer << " : from " << inPktHdr.from << ", box " 
+                                                << inMailHdr.from << "\n";
         cout.flush();
     }
 

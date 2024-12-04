@@ -275,12 +275,7 @@ int main(int argc, char **argv) {
 
     kernel = new Kernel(argc, argv);
 
-    // kernel->Initialize();
-    
-    /* Lab2 - Scheduling - Start */
-    kernel->Initialize(scheType, disableTimer) ;
-
-    /* Lab2 - Scheduling - End */
+    kernel->Initialize();
 
     CallOnUserAbort(Cleanup);  // if user hits ctl-C
 
