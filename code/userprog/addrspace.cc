@@ -295,7 +295,7 @@ AddrSpace::Load(char *fileName)
         remainSize -= blockSize;
         while (remainSize > PageSize) {
             Translate(virtualAddr, &physAddr, 1);
-	        åDEBUG(dbgAddr, "physAddr: " << physAddr);
+	        DEBUG(dbgAddr, "physAddr: " << physAddr);
             executable->ReadAt(&(kernel->machine->mainMemory[physAddr]), PageSize, fileOffset);
             virtualAddr += PageSize;
             fileOffset += PageSize;
