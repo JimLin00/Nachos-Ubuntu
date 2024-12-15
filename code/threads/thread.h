@@ -88,15 +88,24 @@ class Thread {
                                             // must not be running when delete
                                             // is called
 
-    /* Lab2 - Scheduling - Start */
+    /* Lab2 - Scheduling - Start (Setter Getter)*/
 
-    int getBurstTime() {}
-    int getPriority() {}
-    int getStartTime() {}
-    void setBurstTime(int x) {}
-    void setStartTime(int x) {}
-    void setPriority(int x) {}
+    // highest priority is for thread test is this thread is temporary long term scheduler
+    void enableHighestPriority();
+    void disableHighestPriority();
+    bool isHigestPriprity() { return testSchedulerPriority; };
 
+    int getBurstTime() { return burstTime; };
+    int getPriority() { return priority; };
+    int getStartTime() { return startTime; };
+    int getOriginalBrustTime() { return originalBrustTime; };
+    void setBurstTime(int x);
+    void setStartTime(int x);
+    void setPriority(int x);
+    void work(); // minus 1 to brustTime
+
+    void SelfTest();  // test whether thread impl is working
+    void waitUntilTaskAvailable(int nextStartTime);
     /* Lab2 - Scheduling - End */
 
     // basic thread operations
@@ -117,7 +126,6 @@ class Thread {
 
     int getID() { return (ID); }
     void Print() { cout << name; }
-    void SelfTest();  // test whether thread impl is working
 
    private:
     // some of the private data for this class is listed above
@@ -127,9 +135,8 @@ class Thread {
                           // (If NULL, don't deallocate stack)
     
     /* Lab2 - Scheduling - Start */
-    
-    // Hint : Create variable at here.
-
+    int burstTime, originalBrustTime, priority, startTime;
+    bool testSchedulerPriority; // when thread self test is enable this thread has highest priority (as temporary long term scheduler)
     /* Lab2 - Scheduling - End */
 
     ThreadStatus status;  // ready, running or blocked

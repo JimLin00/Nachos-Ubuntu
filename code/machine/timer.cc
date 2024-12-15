@@ -37,9 +37,25 @@
 //----------------------------------------------------------------------
 
 Timer::Timer(bool doRandom, CallBackObj *toCall) {
+    Timer(doRandom, toCall, FALSE);
+}
+
+//----------------------------------------------------------------------
+// Timer::Timer
+//      Initialize a hardware timer device.  Save the place to call
+//	on each interrupt, and then arrange for the timer to start
+//	generating interrupts.
+//
+//      "doRandom" -- if true, arrange for the interrupts to occur
+//		at random, instead of fixed, intervals.
+//      "toCall" is the interrupt handler to call when the timer expires.
+//      "disableTimer" disable time slice (for FCFS SJF etc...)
+//----------------------------------------------------------------------
+
+Timer::Timer(bool doRandom, CallBackObj *toCall, bool disableTimer) {
     randomize = doRandom;
     callPeriodically = toCall;
-    disable = FALSE;
+    disable = disableTimer;
     SetInterrupt();
 }
 

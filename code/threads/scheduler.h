@@ -21,6 +21,9 @@
 
 enum SchedulerType {
         RR,
+        Priority,
+        SJF,
+        FCFS,
 } ;
 
 /* Lab2 - Scheduling - End */
@@ -34,6 +37,8 @@ class Scheduler {
     
     SchedulerType schedulerType ;
     Scheduler(SchedulerType type) ;
+
+    bool isReadyListEmpty() { return readyList->IsEmpty(); };
 
     /* Lab2 - Scheduling - End */
     

@@ -160,6 +160,7 @@ int main(int argc, char **argv) {
     /* Lab2 - Scheduling - Start */
 
     SchedulerType scheType = RR ;
+    bool disableTimer = false;
 
     /* Lab2 - Scheduling - End */
 
@@ -204,16 +205,32 @@ int main(int argc, char **argv) {
 
         // Hint : You should write something in "if()" to implement a new bash option.
         //        At the same time, don't remove the "threadTestFlag" and "ASSERT()"
-        else if () {
+        else if (strcmp(argv[i], "-sche") == 0) {
             threadTestFlag = TRUE;
             ASSERT(i + 1 < argc) ;
-
-            // Hint : This example shows you how to handle the parameter after a bash option
-            //        "cout" is a debug message, "scheType" is a variable to record the scheduling method.
-            if (strcmp(argv[i + 1], "RR") == 0) {
+            
+            char *schedName = argv[i + 1];
+            
+            if (strcmp(schedName, "RR") == 0) {
                 cout << "===== RR =====" << endl ;
-                scheType = RR ;
+                scheType = SchedulerType::RR ;
+                disableTimer = false;
             } // if()
+            else if(strcmp(schedName, "Priority") == 0) {
+                cout << "===== Priority =====" << endl ;
+                scheType = SchedulerType::Priority ;
+                disableTimer = true;
+            }
+            else if(strcmp(schedName, "SJF") == 0) {
+                cout << "===== SJF =====" << endl ;
+                scheType = SchedulerType::SJF ;
+                disableTimer = true;
+            }
+            else if(strcmp(schedName, "FCFS") == 0) {
+                cout << "===== FCFS =====" << endl ;
+                scheType = SchedulerType::FCFS ;
+                disableTimer = true;
+            }
             
             i++ ;
         } // else if()
@@ -261,8 +278,7 @@ int main(int argc, char **argv) {
     // kernel->Initialize();
     
     /* Lab2 - Scheduling - Start */
-
-    kernel->Initialize(scheType) ;
+    kernel->Initialize(scheType, disableTimer) ;
 
     /* Lab2 - Scheduling - End */
 
@@ -272,7 +288,7 @@ int main(int argc, char **argv) {
     // run some tests, if requested
     if (threadTestFlag) {
         kernel->ThreadSelfTest();  // test threads and synchronization
-        return 1 ;
+        kernel->interrupt->Halt();
     }
     if (consoleTestFlag) {
         kernel->ConsoleTest();  // interactive test of the synchronized console
@@ -302,6 +318,7 @@ int main(int argc, char **argv) {
     // finally, run an initial user program if requested to do so
 
     kernel->ExecAll();
+
     // If we don't run a user program, we may get here.
     // Calling "return" would terminate the program.
     // Instead, call Halt, which will first clean up, then

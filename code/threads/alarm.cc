@@ -26,6 +26,18 @@ Alarm::Alarm(bool doRandom) {
 }
 
 //----------------------------------------------------------------------
+// Alarm::Alarm
+//      Initialize a software alarm clock.  Start up a timer device
+//
+//      "doRandom" -- if true, arrange for the hardware interrupts to
+//		occur at random, instead of fixed, intervals.
+//      "disableTimer" disable time slice (for FCFS SJF etc...)
+//----------------------------------------------------------------------
+Alarm::Alarm(bool doRandom, bool disableTimer) {
+    timer = new Timer(doRandom, this, disableTimer);
+}
+
+//----------------------------------------------------------------------
 // Alarm::CallBack
 //	Software interrupt handler for the timer device. The timer device is
 //	set up to interrupt the CPU periodically (once every TimerTicks).

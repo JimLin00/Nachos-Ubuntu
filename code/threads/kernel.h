@@ -39,7 +39,7 @@ class Kernel {
     
     /* Lab2 - Scheduling - Start */
 
-    void Initialize(SchedulerType type) ;
+    void Initialize(SchedulerType type, bool disableTimeslice) ;
 
     /* Lab2 - Scheduling - End */
     

@@ -24,6 +24,38 @@
 #include "debug.h"
 #include "main.h"
 
+/* Lab2 - Scheduling - Start */
+// All the comparator for readList
+static int RRCompare(Thread *t1, Thread *t2) {
+    if(t1->isHigestPriprity()) return -1;
+    else if(t2->isHigestPriprity()) return 1;
+
+    return 0;
+}
+
+static int SJFCompare(Thread *t1, Thread *t2) {
+    if(t1->isHigestPriprity()) return -1;
+    else if(t2->isHigestPriprity()) return 1;
+
+    return t1->getBurstTime() - t2->getBurstTime();
+}
+
+static int FCFSCompare(Thread *t1, Thread *t2) {
+    if(t1->isHigestPriprity()) return -1;
+    else if(t2->isHigestPriprity()) return 1;
+
+    return 0;
+}
+
+static int PriorityCompare(Thread *t1, Thread *t2) {
+    if(t1->isHigestPriprity()) return -1;
+    else if(t2->isHigestPriprity()) return 1;
+
+
+    return t1->getPriority() - t2->getPriority();
+}
+/* Lab2 - Scheduling - End */
+
 //----------------------------------------------------------------------
 // Scheduler::Scheduler
 // 	Initialize the list of ready but not running threads.
@@ -123,9 +155,9 @@ void Scheduler::Run(Thread *nextThread, bool finishing) {
     // in switch.s.  You may have to think
     // a bit to figure out what happens after this, both from the point
     // of view of the thread and from the perspective of the "outside world".
-
+    //cout << "Switching from: " << oldThread->getName() << " to: " << nextThread->getName() << endl;
     SWITCH(oldThread, nextThread);
-
+    //cout << "Switch back" << endl;
     // we're back, running oldThread
 
     // interrupts are off when we return from switch!
@@ -174,22 +206,9 @@ void Scheduler::Print() {
 
 Scheduler::Scheduler(SchedulerType type) {
         schedulerType = type;
-        switch(type)
-        {
-            // This is an example "case"
-            case RR:
-                readyList = new List<Thread *> ;
-                break;
+        
+        int (*comparatorFuncPtr[])(Thread *, Thread *) = {RRCompare, PriorityCompare, SJFCompare, FCFSCompare};
 
-            // This is a "case" framework
-            // More hint : You need to write your thread compare method (Please refer to the PowerPoint).
-            //             For example, if you write a compare method named "RRCompare",
-            //             Line 227 (readyList = new SortedList<Thread *>(/*Your Compare Method*/);) will become :
-            //             readyList = new SortedList<Thread *>( RRCompare );
-
-            case /* scheduler type */ :
-                readyList = new SortedList<Thread *>( /*Your Compare Method*/ );
-                break;
-        }
+        readyList = new SortedList<Thread *>(comparatorFuncPtr[(int)type]);
         toBeDestroyed = NULL;
 } // Scheduler()

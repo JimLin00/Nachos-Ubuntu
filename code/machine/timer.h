@@ -28,6 +28,7 @@
 class Timer : public CallBackObj {
    public:
     Timer(bool doRandom, CallBackObj *toCall);
+    Timer(bool doRandom, CallBackObj *toCall, bool disableTimer);
     // Initialize the timer, and callback to "toCall"
     // every time slice.
     virtual ~Timer() {}

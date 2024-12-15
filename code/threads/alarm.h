@@ -27,6 +27,10 @@ class Alarm : public CallBackObj {
    public:
     Alarm(bool doRandomYield);  // Initialize the timer, and callback
                                 // to "toCall" every time slice.
+
+    Alarm(bool doRandomYield, bool disableTimer);  // Initialize the timer, and callback
+                                                   // to "toCall" every time slice.
+                                                   // "disableTimer" disable time slice for scheduling except RR
     ~Alarm() { delete timer; }
 
     void WaitUntil(int x);  // suspend execution until time > now + x

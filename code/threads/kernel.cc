@@ -251,6 +251,7 @@ void Kernel::ExecAll() {
     for (int i = 1; i <= execfileNum; i++) {
         int a = Exec(execfile[i]);
     }
+
     currentThread->Finish();
     // Kernel::Exec();
 }
@@ -293,7 +294,7 @@ int Kernel::Exec(char *name) {
 // Kernel::Initialize( SchedulerType scheType )
 //----------------------------------------------------------------------
 
-void Kernel::Initialize( SchedulerType scheType ) {
+void Kernel::Initialize( SchedulerType scheType, bool disableTimeSlice) {
 
     currentThread = new Thread("main", threadNum++);
     currentThread->setStatus(RUNNING);
@@ -301,7 +302,7 @@ void Kernel::Initialize( SchedulerType scheType ) {
     stats = new Statistics();
     interrupt = new Interrupt;
     scheduler = new Scheduler( scheType );
-    alarm = new Alarm(randomSlice);
+    alarm = new Alarm(randomSlice, disableTimeSlice);
     machine = new Machine(debugUserProg);
     synchConsoleIn = new SynchConsoleInput(consoleIn);
     synchConsoleOut = new SynchConsoleOutput(consoleOut);

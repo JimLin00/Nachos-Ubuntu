@@ -46,6 +46,12 @@ Thread::Thread(char *threadName, int threadID) {
                                  // of machine registers
     }
     space = NULL;
+
+    /* Lab2 - Scheduling - Start */
+    // set default value
+    testSchedulerPriority = false;
+    burstTime = 0, originalBrustTime = 0, priority = 0, startTime = 0;
+    /* Lab2 - Scheduling - End */
 }
 
 //----------------------------------------------------------------------
@@ -237,6 +243,7 @@ void Thread::Sleep(bool finishing) {
     while ((nextThread = kernel->scheduler->FindNextToRun()) == NULL) {
         kernel->interrupt->Idle();  // no one to run, wait for an interrupt
     }
+
     // returns when it's time for us to run
     kernel->scheduler->Run(nextThread, finishing);
 }
@@ -398,12 +405,18 @@ SimpleThread(int which) {
 //----------------------------------------------------------------------
 
 static void SimulateTimeThread() {
+    kernel->interrupt->setStatus(MachineStatus::UserMode);
+
     Thread *t = kernel->currentThread ;
     while ( t->getBurstTime() > 0 ) {
-        t->setBurstTime( t->getBurstTime() - 1 ) ;
+        t->work();
         cout << "*** thread " << t->getName() << ": remaining time " << t->getBurstTime() << endl ;
         kernel->interrupt->OneTick() ;
+        //cout << "Time: " << kernel->stats->userTicks << endl;
+
     } // while()
+
+    kernel->interrupt->setStatus(MachineStatus::SystemMode);
 } // SimulateTimeThread()
 
 
@@ -416,16 +429,79 @@ void Thread::SelfTest() {
     const int thread_num = 6 ;
     char *name[thread_num] = {"A", "B", "C", "D", "E", "F"} ;
     int priority[thread_num] = {7, 2, 4, 4, 6, 3} ;
-    int burst[thread_num] = {3, 2, 4, 4, 5, 7} ;
+    //int burst[thread_num] = {3, 2, 4, 4, 5, 7} ;
+    int burst[thread_num] = {30, 20, 40, 40, 50, 70} ;
     int start[thread_num] = {1, 1, 7, 7, 15, 15} ;
 
+    kernel->currentThread->enableHighestPriority();
     Thread *t ;
-    int i = 0 ;
-    for ( i = 0 ; i < thread_num ; i ++ ) {
-        t = new Thread( name[i], i ) ;
-        t->setPriority(priority[i]) ;
-        t->setBurstTime(burst[i]) ;
-        t->setStartTime(start[i]) ;
-        t->Fork((VoidFunctionPtr) SimulateTimeThread, (void *)NULL) ;
+    int i = 0;
+    while ( i < thread_num ) {
+        waitUntilTaskAvailable(start[i]);
+
+        for( ;i < thread_num && start[i] <= kernel->stats->userTicks ; i++){
+            t = new Thread(name[i], i);
+            t->setPriority(priority[i]) ;
+            t->setBurstTime(burst[i]) ;
+            t->setStartTime(start[i]) ;
+            t->Fork((VoidFunctionPtr) SimulateTimeThread, (void *)NULL) ;
+        }
+
+        kernel->currentThread->Yield();
     } // for()
+
+    // if no time slice than must insure context switch thread_num times from main to test thread
+    for(i = 0 ; i < thread_num - 1 ; i++){
+        kernel->currentThread->Yield();
+    }
+
+    kernel->currentThread->disableHighestPriority();
+
 } // SelfTest()
+
+//----------------------------------------------------------------------
+// Thread::waitUntilTaskAvailable
+//      this function add user tick one until available tast can start
+//----------------------------------------------------------------------
+void Thread::waitUntilTaskAvailable(int nextStartTime){
+    if(!kernel->scheduler->isReadyListEmpty()) return;
+
+    Statistics *stats = kernel->stats;
+    while(stats->userTicks < nextStartTime){
+        stats->userTicks++;
+        stats->totalTicks++;
+    }
+}
+
+/* Lab2 - Scheduling - Start (Setter Getter)*/
+void Thread::enableHighestPriority(){
+    testSchedulerPriority = true;
+}
+
+void Thread::disableHighestPriority(){
+    testSchedulerPriority = false;
+}
+
+
+void Thread::setBurstTime(int brustTime){
+    this->burstTime = brustTime;
+    this->originalBrustTime = brustTime;
+}
+
+//----------------------------------------------------------------------
+// Thread::work()
+//  Minus one to brust time
+//----------------------------------------------------------------------
+void Thread::work(){
+    this->burstTime--;
+}
+
+void Thread::setPriority(int priority){
+    this->priority = priority;
+}
+
+void Thread::setStartTime(int startTime){
+    this->startTime = startTime;
+}
+
+/* Lab2 - Scheduling - End (Setter Getter)*/
